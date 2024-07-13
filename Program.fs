@@ -56,17 +56,26 @@ let printBoard board =
             printf "%d " board.[i, j]
         printfn ""
 
+let movehead direction head = 
+    let x, y = head
+
+    match direction with
+    | Up -> (x - 1, y)
+    | Down -> (x + 1, y)
+    | Left -> (x, y - 1)
+    | Right -> (x, y + 1)
+
+let inline (%) x y = (x % y + y) % y
+
+let normalizePos (height, width) pos = 
+    let x, y = pos
+    (x % height, y % width)
+
 let rec moveSnake game = 
     let snake = game.state.snake
-    let direction = game.state.direction
     let head = List.head snake
-    let x, y = head
-    let newHead = 
-        match direction with
-        | Up -> (x - 1, y)
-        | Down -> (x + 1, y)
-        | Left -> (x, y - 1)
-        | Right -> (x, y + 1)
+    let newHead = head |> movehead game.state.direction |> normalizePos game.gameWindowSize
+
     { game with state = { game.state with snake = newHead :: snake |> List.rev |> List.tail } }
 
 

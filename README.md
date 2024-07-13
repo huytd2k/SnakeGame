@@ -7,7 +7,7 @@ SnakeGame is a classic console-based snake game implemented in F#. This project 
 ## Features to Implement
 
 ### Basic Game Functionality
-- [ ] Snake movement
+- [x] Snake movement
 - [ ] Food generation
 - [ ] Score tracking
 
