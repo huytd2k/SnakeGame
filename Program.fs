@@ -7,13 +7,13 @@ let renderBoard game =
           Food = food } =
         game
 
-    let mutable board = Array2D.create height width 0
+    let mutable board = Array2D.create height width " "
 
     for (x, y) in snake do
-        board.[x, y] <- 1
+        board.[x, y] <- "O"
 
     let x, y = food
-    board.[x, y] <- 2
+    board.[x, y] <- "X"
     board
 
 let printBoard board =
@@ -21,7 +21,7 @@ let printBoard board =
 
     for i in 0 .. height - 1 do
         for j in 0 .. width - 1 do
-            printf "%d " board.[i, j]
+            printf "%s" board.[i, j]
 
         printfn ""
 
@@ -46,8 +46,12 @@ let randomPosition (height, width) =
 let gameStep game =
     let inputEvent = tryGetInputEvent ()
     let updatedGame = game |> handleInputEvent inputEvent |> nextState (fun () -> randomPosition game.WindowSize)
-    let board = renderBoard updatedGame
-    (updatedGame, board)
+    if isGameOver updatedGame then
+        let newGame = initSnakeGameState () 
+        (newGame, renderBoard newGame)
+    else
+        let board = renderBoard updatedGame
+        (updatedGame, board)
 
 let rec mainGameLoop game =
     Console.Clear()

@@ -67,20 +67,30 @@ let moveHead (direction: Direction) (windowsSize: WindowSize) : Position -> Posi
 let nextState nextFood game =
     let { Snake = snake
           Direction = direction
+          Score = score
           WindowSize = windowsSize } =
         game
 
     let newHead = snake |> List.head |> moveHead direction windowsSize
     let foodEaten = (newHead = game.Food)
-
     let snakeWithoutTail = snake |> List.take (List.length snake - 1)
 
     let newSnake = newHead :: if foodEaten then snake else snakeWithoutTail
 
     { game with 
         Snake = newSnake ; 
-        Food = if foodEaten then nextFood () else game.Food
+        Food = if foodEaten then nextFood () else game.Food ;
+        Score = if foodEaten then score + 1 else score
     }
+
+let rec isSnakeCollidingWithItself snake =
+    match snake with
+        | [] -> false
+        | head :: tail -> List.contains head tail 
+    
+
+let isGameOver game = 
+    isSnakeCollidingWithItself game.Snake
 
 
 let initSnakeGameState () =
